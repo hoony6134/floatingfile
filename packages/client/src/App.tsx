@@ -11,6 +11,7 @@ import {
   BASE_API_URL,
   ENVIRONMENT,
   LAST_VISIT_STORAGE_KEY,
+  ORIGIN,
 } from "./env";
 import useWindowWidth from "./hooks/useWindowWidth";
 import axios from "axios";
@@ -20,6 +21,7 @@ import { ReactQueryDevtoolsPanel } from "react-query/devtools";
 import theme from "./theme";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
+import { Illumi, ConfigPanel } from "illumi";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
@@ -104,33 +106,36 @@ const App: React.FC<{}> = () => {
         <CssBaseline />
         <div className={classes.root}>
           <QueryClientProvider client={queryClient}>
-            <SnackbarProvider
-              maxSnack={3}
-              classes={{
-                variantSuccess: classes.success,
-                variantError: classes.error,
-                variantWarning: classes.warning,
-                variantInfo: classes.info,
-              }}
-              anchorOrigin={{
-                vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-                horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-              }}
-            >
-              <UploadServiceProvider>
-                <SelectedFilesProvider>
-                  <Router history={history}>
-                    <Suspense fallback={null}>
-                      <Switch>
-                        <Route exact path="/" component={Landing} />
-                        <Route path="/s/:code" component={Space} />
-                        <Route component={NotFound} />
-                      </Switch>
-                    </Suspense>
-                  </Router>
-                </SelectedFilesProvider>
-              </UploadServiceProvider>
-            </SnackbarProvider>
+            <Illumi config={{ url: ORIGIN }}>
+              <SnackbarProvider
+                maxSnack={3}
+                classes={{
+                  variantSuccess: classes.success,
+                  variantError: classes.error,
+                  variantWarning: classes.warning,
+                  variantInfo: classes.info,
+                }}
+                anchorOrigin={{
+                  vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
+                  horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
+                }}
+              >
+                <UploadServiceProvider>
+                  <SelectedFilesProvider>
+                    <Router history={history}>
+                      <Suspense fallback={null}>
+                        <Switch>
+                          <Route exact path="/" component={Landing} />
+                          <Route path="/s/:code" component={Space} />
+                          <Route component={NotFound} />
+                        </Switch>
+                      </Suspense>
+                    </Router>
+                  </SelectedFilesProvider>
+                </UploadServiceProvider>
+              </SnackbarProvider>
+              <ConfigPanel />
+            </Illumi>
             <ReactQueryDevtoolsPanel />
           </QueryClientProvider>
         </div>
