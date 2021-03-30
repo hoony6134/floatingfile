@@ -34,6 +34,7 @@ import {
   mdiLanguageXaml,
 } from "@mdi/js";
 import Icon from "@mdi/react";
+import { Selector, Variant } from "illumi";
 
 function getPath(extension: string) {
   let path = mdiFileQuestionOutline;
@@ -146,10 +147,21 @@ const FileIcon: React.FC<{
 }> = ({ extension, previewUrl }) => {
   if (previewUrl) {
     return (
-      <img
-        src={`${previewUrl}`}
-        style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
-      />
+      <Selector name="image-file-icon">
+        <Variant name="image-preview">
+          <img
+            src={`${previewUrl}`}
+            style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
+          />
+        </Variant>
+        <Variant name="icon">
+          <Icon
+            path={getPath(extension)}
+            size="42px"
+            style={{ marginTop: "5px", opacity: 0.75 }}
+          />
+        </Variant>
+      </Selector>
     );
   }
   return (
